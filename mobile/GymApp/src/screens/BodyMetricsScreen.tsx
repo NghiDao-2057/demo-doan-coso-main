@@ -1,0 +1,742 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { useAuth } from '../context/AuthContext';
+import apiService from '../services/api';
+
+interface BodyMetrics {
+  _id: string;
+  date: string;
+  weight: number;
+  height?: number;
+  bmi?: number;
+  bodyFat?: number;
+  muscleMass?: number;
+  measurements?: {
+    chest?: number;
+    waist?: number;
+    hips?: number;
+    biceps?: number;
+    thighs?: number;
+    calves?: number;
+  };
+  notes?: string;
+}
+
+interface Stats {
+  totalEntries: number;
+  currentWeight: number;
+  currentBMI: number;
+  currentBMICategory: string;
+  totalWeightChange: number;
+  lowestWeight: number;
+  highestWeight: number;
+}
+
+const BodyMetricsScreen = ({ navigation }: any) => {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [metrics, setMetrics] = useState<BodyMetrics[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    weight: '',
+    height: '',
+    bodyFat: '',
+    muscleMass: '',
+    chest: '',
+    waist: '',
+    hips: '',
+    biceps: '',
+    thighs: '',
+    calves: '',
+    notes: '',
+  });
+
+  useEffect(() => {
+    fetchMetrics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchMetrics = async () => {
+    try {
+      setLoading(true);
+      const userId = (user as any)?._id || (user as any)?.id;
+      const response = await apiService.get(`/body-metrics/user/${userId}?limit=30`);
+      const data = response as any;
+      
+      setMetrics(data.data || []);
+      setStats(data.stats);
+    } catch (error) {
+      console.error('Error fetching body metrics:', error);
+      Alert.alert('Lỗi', 'Không thể tải dữ liệu số đo');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchMetrics();
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.weight) {
+      Alert.alert('Lỗi', 'Vui lòng nhập cân nặng');
+      return;
+    }
+
+    try {
+      const payload: any = {
+        weight: parseFloat(formData.weight),
+        date: new Date(),
+      };
+
+      if (formData.height) payload.height = parseFloat(formData.height);
+      if (formData.bodyFat) payload.bodyFat = parseFloat(formData.bodyFat);
+      if (formData.muscleMass) payload.muscleMass = parseFloat(formData.muscleMass);
+      if (formData.notes) payload.notes = formData.notes;
+
+      const measurements: any = {};
+      if (formData.chest) measurements.chest = parseFloat(formData.chest);
+      if (formData.waist) measurements.waist = parseFloat(formData.waist);
+      if (formData.hips) measurements.hips = parseFloat(formData.hips);
+      if (formData.biceps) measurements.biceps = parseFloat(formData.biceps);
+      if (formData.thighs) measurements.thighs = parseFloat(formData.thighs);
+      if (formData.calves) measurements.calves = parseFloat(formData.calves);
+
+      if (Object.keys(measurements).length > 0) {
+        payload.measurements = measurements;
+      }
+
+      await apiService.post('/body-metrics', payload);
+      
+      Alert.alert('Thành công', 'Đã lưu số đo thành công');
+      setShowAddForm(false);
+      resetForm();
+      fetchMetrics();
+    } catch (error) {
+      console.error('Error saving body metrics:', error);
+      Alert.alert('Lỗi', 'Không thể lưu số đo');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      weight: '',
+      height: '',
+      bodyFat: '',
+      muscleMass: '',
+      chest: '',
+      waist: '',
+      hips: '',
+      biceps: '',
+      thighs: '',
+      calves: '',
+      notes: '',
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    Alert.alert(
+      'Xác nhận xóa',
+      'Bạn có chắc chắn muốn xóa số đo này?',
+      [
+        { text: 'Hủy', style: 'cancel' },
+        {
+          text: 'Xóa',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await apiService.delete(`/body-metrics/${id}`);
+              Alert.alert('Thành công', 'Đã xóa số đo');
+              fetchMetrics();
+            } catch {
+              Alert.alert('Lỗi', 'Không thể xóa số đo');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const getBMIColor = (bmi?: number) => {
+    if (!bmi) return '#999';
+    if (bmi < 18.5) return '#FF9800';
+    if (bmi < 25) return '#4CAF50';
+    if (bmi < 30) return '#FF9800';
+    return '#F44336';
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#ec4899" />
+        <Text style={styles.loadingText}>Đang tải dữ liệu...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <LinearGradient
+        colors={['#581c87', '#1e40af', '#047857']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Số đo cơ thể</Text>
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => setShowAddForm(!showAddForm)}
+        >
+          <Text style={styles.addButtonText}>{showAddForm ? '✕' : '+'}</Text>
+        </TouchableOpacity>
+      </LinearGradient>
+
+      <ScrollView
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        {/* Add Form */}
+        {showAddForm && (
+          <View style={styles.formContainer}>
+            <Text style={styles.formTitle}>➕ Thêm số đo mới</Text>
+
+            <View style={styles.formRow}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>⚖️ Cân nặng (kg) *</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.weight}
+                  onChangeText={(text) => setFormData({ ...formData, weight: text })}
+                  keyboardType="numeric"
+                  placeholder="70"
+                  placeholderTextColor="#999"
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>📏 Chiều cao (cm)</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.height}
+                  onChangeText={(text) => setFormData({ ...formData, height: text })}
+                  keyboardType="numeric"
+                  placeholder="170"
+                  placeholderTextColor="#999"
+                />
+              </View>
+            </View>
+
+            <View style={styles.formRow}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>💧 Body Fat (%)</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.bodyFat}
+                  onChangeText={(text) => setFormData({ ...formData, bodyFat: text })}
+                  keyboardType="numeric"
+                  placeholder="18"
+                  placeholderTextColor="#999"
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>💪 Cơ bắp (%)</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.muscleMass}
+                  onChangeText={(text) => setFormData({ ...formData, muscleMass: text })}
+                  keyboardType="numeric"
+                  placeholder="40"
+                  placeholderTextColor="#999"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.sectionTitle}>📐 Số đo vòng (cm)</Text>
+            <View style={styles.formRow}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Ngực</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.chest}
+                  onChangeText={(text) => setFormData({ ...formData, chest: text })}
+                  keyboardType="numeric"
+                  placeholder="95"
+                  placeholderTextColor="#999"
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Eo</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.waist}
+                  onChangeText={(text) => setFormData({ ...formData, waist: text })}
+                  keyboardType="numeric"
+                  placeholder="75"
+                  placeholderTextColor="#999"
+                />
+              </View>
+            </View>
+
+            <View style={styles.formRow}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Mông</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.hips}
+                  onChangeText={(text) => setFormData({ ...formData, hips: text })}
+                  keyboardType="numeric"
+                  placeholder="95"
+                  placeholderTextColor="#999"
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Tay</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.biceps}
+                  onChangeText={(text) => setFormData({ ...formData, biceps: text })}
+                  keyboardType="numeric"
+                  placeholder="35"
+                  placeholderTextColor="#999"
+                />
+              </View>
+            </View>
+
+            <View style={styles.formRow}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Đùi</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.thighs}
+                  onChangeText={(text) => setFormData({ ...formData, thighs: text })}
+                  keyboardType="numeric"
+                  placeholder="55"
+                  placeholderTextColor="#999"
+                />
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Bắp chân</Text>
+                <TextInput
+                  style={styles.input}
+                  value={formData.calves}
+                  onChangeText={(text) => setFormData({ ...formData, calves: text })}
+                  keyboardType="numeric"
+                  placeholder="38"
+                  placeholderTextColor="#999"
+                />
+              </View>
+            </View>
+
+            <Text style={styles.label}>📝 Ghi chú</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={formData.notes}
+              onChangeText={(text) => setFormData({ ...formData, notes: text })}
+              multiline
+              numberOfLines={3}
+              placeholder="Ghi chú về chế độ ăn, tập luyện..."
+              placeholderTextColor="#999"
+            />
+
+            <View style={styles.formButtons}>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setShowAddForm(false)}>
+                <Text style={styles.cancelButtonText}>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <Text style={styles.submitButtonText}>💾 Lưu số đo</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Stats Summary */}
+        {stats && (
+          <View style={styles.statsContainer}>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{stats.currentWeight} kg</Text>
+              <Text style={styles.statLabel}>Cân nặng hiện tại</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={[styles.statValue, { color: getBMIColor(stats.currentBMI) }]}>
+                {stats.currentBMI?.toFixed(1)}
+              </Text>
+              <Text style={styles.statLabel}>{stats.currentBMICategory}</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text
+                style={[
+                  styles.statValue,
+                  stats.totalWeightChange < 0 ? styles.weightDecrease : styles.weightIncrease,
+                ]}
+              >
+                {stats.totalWeightChange > 0 ? '+' : ''}
+                {stats.totalWeightChange.toFixed(1)} kg
+              </Text>
+              <Text style={styles.statLabel}>Thay đổi</Text>
+            </View>
+          </View>
+        )}
+
+        {/* History List */}
+        <View style={styles.historyContainer}>
+          <Text style={styles.historyTitle}>📊 Lịch sử số đo</Text>
+          {metrics.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyIcon}>📏</Text>
+              <Text style={styles.emptyText}>Chưa có dữ liệu số đo</Text>
+              <Text style={styles.emptySubText}>Thêm số đo đầu tiên của bạn!</Text>
+            </View>
+          ) : (
+            metrics.map((metric) => (
+              <View key={metric._id} style={styles.metricCard}>
+                <View style={styles.metricHeader}>
+                  <Text style={styles.metricDate}>📅 {formatDate(metric.date)}</Text>
+                  <TouchableOpacity onPress={() => handleDelete(metric._id)}>
+                    <Text style={styles.deleteButton}>🗑️</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.metricBody}>
+                  <View style={styles.metricRow}>
+                    <Text style={styles.metricLabel}>⚖️ Cân nặng:</Text>
+                    <Text style={styles.metricValue}>{metric.weight} kg</Text>
+                  </View>
+                  {metric.bmi && (
+                    <View style={styles.metricRow}>
+                      <Text style={styles.metricLabel}>📊 BMI:</Text>
+                      <Text style={[styles.metricValue, { color: getBMIColor(metric.bmi) }]}>
+                        {metric.bmi.toFixed(1)}
+                      </Text>
+                    </View>
+                  )}
+                  {metric.bodyFat && (
+                    <View style={styles.metricRow}>
+                      <Text style={styles.metricLabel}>💧 Body Fat:</Text>
+                      <Text style={styles.metricValue}>{metric.bodyFat}%</Text>
+                    </View>
+                  )}
+                  {metric.measurements && (
+                    <View style={styles.measurements}>
+                      {metric.measurements.chest && (
+                        <Text style={styles.measurementText}>
+                          Ngực: {metric.measurements.chest}cm
+                        </Text>
+                      )}
+                      {metric.measurements.waist && (
+                        <Text style={styles.measurementText}>
+                          Eo: {metric.measurements.waist}cm
+                        </Text>
+                      )}
+                      {metric.measurements.hips && (
+                        <Text style={styles.measurementText}>
+                          Mông: {metric.measurements.hips}cm
+                        </Text>
+                      )}
+                    </View>
+                  )}
+                  {metric.notes && (
+                    <Text style={styles.metricNotes}>📝 {metric.notes}</Text>
+                  )}
+                </View>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0f172a',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.7)',
+  },
+  header: {
+    paddingTop: 50,
+    paddingBottom: 15,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backButton: {
+    padding: 5,
+  },
+  backButtonText: {
+    fontSize: 28,
+    color: '#fff',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    flex: 1,
+    textAlign: 'center',
+  },
+  addButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#ec4899',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButtonText: {
+    fontSize: 20,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    backgroundColor: '#1e1b4b',
+    margin: 15,
+    padding: 15,
+    borderRadius: 12,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  formTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  formRow: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    gap: 10,
+  },
+  formGroup: {
+    flex: 1,
+  },
+  label: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.8)',
+    marginBottom: 5,
+    fontWeight: '500',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    color: '#fff',
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  formButtons: {
+    flexDirection: 'row',
+    marginTop: 15,
+    gap: 10,
+  },
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.3)',
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: '600',
+  },
+  submitButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    backgroundColor: '#ec4899',
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    fontSize: 15,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    padding: 15,
+    gap: 10,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#1e1b4b',
+    padding: 15,
+    borderRadius: 12,
+    alignItems: 'center',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#10b981',
+    marginBottom: 5,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center',
+  },
+  weightDecrease: {
+    color: '#10b981',
+  },
+  weightIncrease: {
+    color: '#ef4444',
+  },
+  historyContainer: {
+    padding: 15,
+  },
+  historyTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 15,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 8,
+  },
+  emptySubText: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+  },
+  metricCard: {
+    backgroundColor: '#1e1b4b',
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  metricHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  metricDate: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#10b981',
+  },
+  deleteButton: {
+    fontSize: 18,
+  },
+  metricBody: {
+    gap: 8,
+  },
+  metricRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  metricLabel: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.7)',
+  },
+  metricValue: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  measurements: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8,
+    gap: 8,
+  },
+  measurementText: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  metricNotes: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
+    fontStyle: 'italic',
+    marginTop: 8,
+    padding: 10,
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 8,
+  },
+});
+
+export default BodyMetricsScreen;

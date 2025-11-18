@@ -1,0 +1,14 @@
+{
+  "projects": [
+    {
+      "displayName": "frontend",
+      "testMatch": ["<rootDir>/src/**/*.test.js"],
+      "testEnvironment": "jsdom"
+    },
+    {
+      "displayName": "mobile",
+      "testMatch": ["<rootDir>/mobile/GymApp/__tests__/**/*.test.tsx"],
+      "testEnvironment": "node"
+    }
+  ]
+}

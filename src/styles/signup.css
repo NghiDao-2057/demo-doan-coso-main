@@ -1,0 +1,26 @@
+/* Force hide navbar on signup page */
+.signup-page ~ nav,
+.signup-page ~ header,
+nav,
+header,
+.navbar,
+.nav,
+.navigation,
+.header,
+.top-bar,
+.main-nav {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}
+
+body {
+  padding-top: 0 !important;
+  margin: 0 !important;
+}

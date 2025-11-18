@@ -1,0 +1,1869 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;200;300;400;500;600;700;800;900&family=Noto+Serif+JP:wght@200;300;400;500;600;700;900&display=swap");
+
+/* RESET & BASE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  line-height: 1.7;
+  color: #212121;
+  background-color: #fafafa;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  /* BỎ HOÀN TOÀN PADDING-TOP */
+}
+
+/* BỎ CLASS NÀY */
+/* body.with-navbar {
+  padding-top: var(--nav-height, 90px);
+  transition: padding-top 0.7s ease-out;
+} */
+
+/* JAPANESE COLOR PALETTE */
+:root {
+  /* Primary grays */
+  --jp-sumi-50: #fafafa;
+  --jp-sumi-100: #f5f5f5;
+  --jp-sumi-200: #eeeeee;
+  --jp-sumi-300: #e0e0e0;
+  --jp-sumi-400: #bdbdbd;
+  --jp-sumi-500: #9e9e9e;
+  --jp-sumi-600: #757575;
+  --jp-sumi-700: #616161;
+  --jp-sumi-800: #424242;
+  --jp-sumi-900: #212121;
+
+  /* Sakura pink */
+  --jp-sakura-50: #fef7f7;
+  --jp-sakura-100: #fce8e8;
+  --jp-sakura-200: #f8d4d4;
+  --jp-sakura-300: #f2b5b5;
+  --jp-sakura-400: #ea8a8a;
+  --jp-sakura-500: #de5c5c;
+  --jp-sakura-600: #c93f3f;
+
+  /* Traditional red */
+  --jp-aka-500: #e53e3e;
+  --jp-aka-600: #dc2626;
+  --jp-aka-700: #b91c1c;
+
+  /* Indigo blue */
+  --jp-ai-500: #6366f1;
+  --jp-ai-600: #4f46e5;
+  --jp-ai-700: #4338ca;
+
+  /* Forest green */
+  --jp-midori-500: #22c55e;
+  --jp-midori-600: #16a34a;
+  --jp-midori-700: #15803d;
+
+  /* Gold */
+  --jp-ki-500: #f59e0b;
+  --jp-ki-600: #d97706;
+
+  /* Pure colors */
+  --jp-shiro: #ffffff;
+  --jp-kuro: #000000;
+
+  /* Shadows */
+  --jp-shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --jp-shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --jp-shadow-large: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --jp-shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.16);
+
+  /* Spacing - based on golden ratio */
+  --jp-space-ma: 0.618rem;
+  --jp-space-tatami: 1.618rem;
+  --jp-space-engawa: 2.618rem;
+}
+
+/* LAYOUT SYSTEM */
+.jp-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--jp-space-tatami);
+}
+
+.jp-grid {
+  display: grid;
+  gap: var(--jp-space-tatami);
+}
+
+.jp-flex {
+  display: flex;
+  gap: var(--jp-space-tatami);
+}
+
+/* TYPOGRAPHY */
+.jp-heading {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--jp-sumi-900);
+  margin-bottom: var(--jp-space-tatami);
+}
+
+.jp-heading-1 {
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.jp-heading-2 {
+  font-size: 2.25rem;
+  font-weight: 300;
+}
+
+.jp-heading-3 {
+  font-size: 1.875rem;
+  font-weight: 400;
+}
+
+.jp-heading-4 {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.jp-heading-5 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.jp-heading-6 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.jp-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--jp-sumi-700);
+}
+
+.jp-body-large {
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+
+.jp-body-small {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.jp-caption {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--jp-sumi-600);
+}
+
+/* CARDS */
+.jp-card {
+  background: var(--jp-shiro);
+  border: 1px solid var(--jp-sumi-200);
+  border-radius: 12px;
+  padding: var(--jp-space-tatami);
+  box-shadow: var(--jp-shadow-soft);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.jp-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--jp-sakura-500) 0%,
+    var(--jp-ai-500) 50%,
+    var(--jp-sakura-500) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.jp-card:hover::before {
+  opacity: 1;
+}
+
+.jp-card-elevated {
+  box-shadow: var(--jp-shadow-medium);
+}
+
+.jp-card-elevated:hover {
+  box-shadow: var(--jp-shadow-large);
+}
+
+/* BUTTONS */
+.jp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.jp-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.jp-btn:hover::before {
+  left: 100%;
+}
+
+/* BUTTON SIZES */
+.jp-btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+}
+
+.jp-btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+.jp-btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.125rem;
+}
+
+/* BUTTON VARIANTS - Japanese Colors */
+.jp-btn-primary {
+  background: var(--jp-sumi-800);
+  color: var(--jp-shiro);
+}
+
+.jp-btn-primary:hover {
+  background: var(--jp-sumi-900);
+  transform: translateY(-2px);
+}
+
+.jp-btn-secondary {
+  background: transparent;
+  color: var(--jp-sumi-800);
+  border: 1px solid var(--jp-sumi-300);
+}
+
+.jp-btn-secondary:hover {
+  background: var(--jp-sumi-50);
+  border-color: var(--jp-sumi-400);
+}
+
+.jp-btn-sakura {
+  background: linear-gradient(
+    135deg,
+    var(--jp-sakura-500),
+    var(--jp-sakura-600)
+  );
+  color: var(--jp-shiro);
+  box-shadow: 0 4px 16px rgba(222, 92, 92, 0.3);
+}
+
+.jp-btn-sakura:hover {
+  background: linear-gradient(
+    135deg,
+    var(--jp-sakura-600),
+    var(--jp-sakura-700)
+  );
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(222, 92, 92, 0.4);
+}
+
+.jp-btn-aka {
+  background: var(--jp-aka-500);
+  color: var(--jp-shiro);
+}
+
+.jp-btn-aka:hover {
+  background: var(--jp-aka-600);
+  transform: translateY(-2px);
+}
+
+.jp-btn-ai {
+  background: linear-gradient(135deg, var(--jp-ai-500), var(--jp-ai-600));
+  color: var(--jp-shiro);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+}
+
+.jp-btn-ai:hover {
+  background: linear-gradient(135deg, var(--jp-ai-600), var(--jp-ai-700));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+}
+
+.jp-btn-midori {
+  background: var(--jp-midori-500);
+  color: var(--jp-shiro);
+}
+
+.jp-btn-midori:hover {
+  background: var(--jp-midori-600);
+  transform: translateY(-2px);
+}
+
+/* ZEN BORDER for headings */
+.jp-zen-border {
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.jp-zen-border::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--jp-sakura-500),
+    transparent
+  );
+}
+
+/* WABI-SABI textures */
+.jp-wabi-sabi {
+  position: relative;
+}
+
+.jp-wabi-sabi::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      circle at 20% 50%,
+      rgba(222, 92, 92, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(99, 102, 241, 0.05) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* MONO NO AWARE (物の哀れ) - Gentle melancholy aesthetic */
+.jp-mono-no-aware {
+  position: relative;
+}
+
+.jp-mono-no-aware::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(250, 250, 250, 0.9) 0%,
+    rgba(245, 245, 245, 0.8) 50%,
+    rgba(250, 250, 250, 0.9) 100%
+  );
+  backdrop-filter: blur(1px);
+  pointer-events: none;
+}
+
+/* MA (間) - Negative space utility classes */
+.jp-ma-sm {
+  padding: var(--jp-space-ma);
+}
+
+.jp-ma-md {
+  padding: var(--jp-space-tatami);
+}
+
+.jp-ma-lg {
+  padding: var(--jp-space-engawa);
+}
+
+.jp-ma-xl {
+  padding: calc(var(--jp-space-engawa) * 1.5);
+}
+
+/* Enhanced hover animations */
+.jp-card:hover {
+  transform: translateY(-4px);
+}
+
+.jp-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Origami fold effect */
+.jp-origami-fold {
+  position: relative;
+  overflow: hidden;
+}
+
+.jp-origami-fold::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 60%
+  );
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+.jp-origami-fold:hover::before {
+  opacity: 1;
+  animation: origami-shimmer 1.5s ease-in-out;
+}
+
+@keyframes origami-shimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .jp-container {
+    padding: 0 1rem;
+  }
+
+  .jp-nav {
+    backdrop-filter: blur(10px);
+  }
+
+  .jp-heading-1 {
+    font-size: 2rem;
+  }
+
+  .jp-heading-2 {
+    font-size: 1.75rem;
+  }
+
+  .jp-heading-5 {
+    font-size: 1.125rem;
+  }
+}
+
+/* CUSTOM SCROLLBAR với Japanese style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--jp-sumi-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--jp-sakura-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--jp-sakura-500);
+}
+
+/* FOCUS STATES */
+.jp-btn:focus,
+.jp-input:focus {
+  outline: 2px solid var(--jp-ai-500);
+  outline-offset: 2px;
+}
+
+/* LOADING ANIMATION */
+@keyframes zen-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.zen-loading {
+  animation: zen-spin 2s linear infinite;
+}
+
+/* SELECTION COLORS */
+::selection {
+  background: var(--jp-sakura-200);
+  color: var(--jp-sumi-900);
+}
+
+::-moz-selection {
+  background: var(--jp-sakura-200);
+  color: var(--jp-sumi-900);
+}
+
+/* ENHANCED NAVIGATION LAYOUT */
+.jp-nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid var(--jp-sumi-200);
+  box-shadow: var(--jp-shadow-soft);
+  backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.jp-nav .jp-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1800px; /* Tăng max-width lên 1800px để chứa nhiều navigation items */
+}
+
+/* NAVIGATION CONTAINER EXPANSION */
+.navigation-container {
+  width: 100%;
+  max-width: none;
+  min-width: 800px; /* Đảm bảo width tối thiểu */
+  padding: 0.75rem 2rem; /* Tăng padding để navigation dài ra 2 bên */
+}
+
+/* NAVIGATION ITEMS SPACING */
+.navigation-items {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Thay đổi từ center thành space-between */
+  flex-wrap: nowrap;
+  width: 100%;
+  gap: 1rem; /* Thêm gap giữa các items */
+}
+
+.navigation-items::-webkit-scrollbar {
+  display: none;
+}
+
+/* NAVIGATION ITEM EXPANSION */
+.nav-item {
+  flex: 1; /* Mỗi item chiếm equal space */
+  display: flex;
+  justify-content: center;
+  min-width: fit-content;
+}
+
+/* RESPONSIVE NAVIGATION */
+@media (max-width: 1536px) {
+  .jp-nav .jp-container {
+    max-width: 1600px;
+  }
+
+  .navigation-container {
+    min-width: 700px;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+@media (max-width: 1280px) {
+  .jp-nav .jp-container {
+    max-width: 1400px;
+  }
+
+  .navigation-container {
+    min-width: 600px;
+    padding: 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .jp-nav .jp-container {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  .navigation-container {
+    min-width: auto;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .navigation-items {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .jp-nav .jp-container {
+    padding: 0 0.5rem;
+  }
+}
+
+/* BREAKPOINT SPECIFIC ADJUSTMENTS */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .navigation-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .navigation-item {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+@media (min-width: 1536px) {
+  .navigation-item {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* SECTIONS */
+.jp-section {
+  padding: 4rem 0;
+}
+
+.jp-section-lg {
+  padding: 6rem 0;
+}
+
+.jp-section-xl {
+  padding: 8rem 0;
+}
+
+/* BACKGROUNDS */
+.jp-bg-paper {
+  background: var(--jp-shiro);
+}
+
+.jp-bg-subtle {
+  background: var(--jp-sumi-50);
+}
+
+.jp-bg-muted {
+  background: var(--jp-sumi-100);
+}
+
+.jp-bg-dark {
+  background: var(--jp-sumi-900);
+  color: var(--jp-shiro);
+}
+
+.jp-bg-sakura {
+  background: linear-gradient(
+    135deg,
+    var(--jp-sakura-50) 0%,
+    var(--jp-sakura-100) 100%
+  );
+}
+
+.jp-bg-pattern {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--jp-sumi-300) 1px,
+    transparent 0
+  );
+  background-size: 20px 20px;
+}
+
+/* BORDERS */
+.jp-border {
+  border: 1px solid var(--jp-sumi-200);
+}
+
+.jp-border-top {
+  border-top: 1px solid var(--jp-sumi-200);
+}
+
+.jp-border-bottom {
+  border-bottom: 1px solid var(--jp-sumi-200);
+}
+
+.jp-border-left {
+  border-left: 4px solid var(--jp-sakura-500);
+}
+
+/* UTILITIES */
+.jp-rounded {
+  border-radius: 8px;
+}
+
+.jp-rounded-lg {
+  border-radius: 12px;
+}
+
+.jp-rounded-xl {
+  border-radius: 16px;
+}
+
+.jp-rounded-full {
+  border-radius: 9999px;
+}
+
+.jp-shadow-soft {
+  box-shadow: var(--jp-shadow-soft);
+}
+
+.jp-shadow-medium {
+  box-shadow: var(--jp-shadow-medium);
+}
+
+.jp-shadow-large {
+  box-shadow: var(--jp-shadow-large);
+}
+
+/* TEXT COLORS */
+.jp-text-primary {
+  color: var(--jp-sumi-900);
+}
+
+.jp-text-secondary {
+  color: var(--jp-sumi-700);
+}
+
+.jp-text-muted {
+  color: var(--jp-sumi-600);
+}
+
+.jp-text-subtle {
+  color: var(--jp-sumi-500);
+}
+
+.jp-text-sakura {
+  color: var(--jp-sakura-500);
+}
+
+.jp-text-aka {
+  color: var(--jp-aka-500);
+}
+
+.jp-text-ai {
+  color: var(--jp-ai-500);
+}
+
+.jp-text-midori {
+  color: var(--jp-midori-500);
+}
+
+/* SPACING */
+.jp-space-ma {
+  gap: var(--jp-space-ma);
+}
+
+.jp-space-tatami {
+  gap: var(--jp-space-tatami);
+}
+
+.jp-space-engawa {
+  gap: var(--jp-space-engawa);
+}
+
+/* ANIMATIONS */
+@keyframes jp-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jp-animate-fade-in {
+  animation: jp-fade-in 0.6s ease-out;
+}
+
+@keyframes jp-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.jp-animate-slide-in {
+  animation: jp-slide-in 0.5s ease-out;
+}
+
+/* ENHANCED ANIMATIONS */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate 20s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* GRADIENT TEXT UTILITIES */
+.gradient-text-rainbow {
+  background: linear-gradient(
+    45deg,
+    #ff6b6b,
+    #4ecdc4,
+    #45b7d1,
+    #96ceb4,
+    #feca57
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 3s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ENHANCED HOVER EFFECTS */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* COLORFUL BORDERS */
+.border-gradient {
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+  background-size: 300% 300%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* ENHANCED BUTTON STYLES */
+.btn-rainbow {
+  background: linear-gradient(
+    45deg,
+    #ff6b6b,
+    #4ecdc4,
+    #45b7d1,
+    #96ceb4,
+    #feca57
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 3s ease infinite;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-rainbow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 3D EFFECTS */
+.effect-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.effect-3d:hover {
+  transform: rotateY(10deg) rotateX(5deg);
+}
+
+/* BACKDROP BLUR UTILITIES */
+.backdrop-blur-soft {
+  backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-medium {
+  backdrop-filter: blur(16px);
+}
+
+.backdrop-blur-strong {
+  backdrop-filter: blur(24px);
+}
+
+/* ULTRA EFFECTS */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* 3D HOVER EFFECTS */
+.hover-3d {
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
+}
+
+.hover-3d:hover {
+  transform: rotateY(15deg) rotateX(5deg) translateZ(20px);
+}
+
+/* NEON GLOW EFFECTS */
+.neon-pink {
+  box-shadow: 0 0 5px #ff1493, 0 0 10px #ff1493, 0 0 20px #ff1493,
+    0 0 40px #ff1493;
+}
+
+.neon-blue {
+  box-shadow: 0 0 5px #00bfff, 0 0 10px #00bfff, 0 0 20px #00bfff,
+    0 0 40px #00bfff;
+}
+
+.neon-green {
+  box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00,
+    0 0 40px #00ff00;
+}
+
+/* ULTRA GRADIENTS */
+.ultra-gradient-1 {
+  background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
+  background-size: 400% 400%;
+  animation: ultra-gradient 4s ease infinite;
+}
+
+.ultra-gradient-2 {
+  background: linear-gradient(45deg, #f72585, #7209b7, #480ca8, #0096c7);
+  background-size: 400% 400%;
+  animation: ultra-gradient 4s ease infinite;
+}
+
+@keyframes ultra-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* FLOATING ANIMATIONS */
+.float-1 {
+  animation: float-1 6s ease-in-out infinite;
+}
+
+.float-2 {
+  animation: float-2 8s ease-in-out infinite;
+}
+
+.float-3 {
+  animation: float-3 7s ease-in-out infinite;
+}
+
+@keyframes float-1 {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+  }
+}
+
+@keyframes float-2 {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(-10deg);
+  }
+}
+
+@keyframes float-3 {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-25px) rotate(5deg);
+  }
+}
+
+/* ULTRA SHADOWS */
+.shadow-ultra {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.shadow-4xl {
+  box-shadow: 0 40px 80px -12px rgba(0, 0, 0, 0.25),
+    0 0 40px rgba(139, 69, 19, 0.3);
+}
+
+/* GLITCH EFFECT */
+.glitch {
+  position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch::before {
+  animation: glitch-1 0.5s infinite;
+  color: #ff00ff;
+  z-index: -1;
+}
+
+.glitch::after {
+  animation: glitch-2 0.5s infinite;
+  color: #00ffff;
+  z-index: -2;
+}
+
+@keyframes glitch-1 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(2px, -2px);
+  }
+  40% {
+    transform: translate(2px, 2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(-2px, 2px);
+  }
+}
+
+/* PARTICLE EFFECTS */
+.particles {
+  position: relative;
+  overflow: hidden;
+}
+
+.particles::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+    radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+    radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+    radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+    radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  animation: particles 10s linear infinite;
+}
+
+@keyframes particles {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-200px);
+  }
+}
+
+/* RESPONSIVE MEGA IMPROVEMENTS */
+@media (max-width: 768px) {
+  .ultra-gradient-1,
+  .ultra-gradient-2 {
+    background-size: 200% 200%;
+  }
+
+  .shadow-4xl {
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .neon-pink,
+  .neon-blue,
+  .neon-green {
+    box-shadow: 0 0 10px currentColor;
+  }
+}
+
+/* JAPANESE SPECIFIC ENHANCEMENTS */
+
+/* LINE CLAMP UTILITY */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ENHANCED JAPANESE ANIMATIONS */
+@keyframes sakura-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.sakura-animation {
+  animation: sakura-fall 10s linear infinite;
+}
+
+@keyframes zen-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+.zen-breathe {
+  animation: zen-breathe 4s ease-in-out infinite;
+}
+
+/* JAPANESE MODAL ENHANCEMENTS */
+.jp-modal-backdrop {
+  background: rgba(33, 33, 33, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+.jp-modal-content {
+  background: linear-gradient(
+    135deg,
+    var(--jp-shiro) 0%,
+    var(--jp-sumi-50) 100%
+  );
+  border: 2px solid var(--jp-sakura-200);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(222, 92, 92, 0.1);
+}
+
+/* ENHANCED JAPANESE CARDS */
+.jp-card-zen {
+  position: relative;
+  background: var(--jp-shiro);
+  border: 1px solid var(--jp-sumi-200);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.jp-card-zen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--jp-sakura-400) 0%,
+    var(--jp-ai-400) 33%,
+    var(--jp-midori-400) 66%,
+    var(--jp-ki-400) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.jp-card-zen:hover::before {
+  opacity: 1;
+}
+
+/* JAPANESE TYPOGRAPHY ENHANCEMENTS */
+.jp-text-zen {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+}
+
+.jp-text-kanji {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 400;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+}
+
+/* ENHANCED HOVER STATES */
+.jp-hover-lift {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jp-hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(222, 92, 92, 0.1);
+}
+
+/* JAPANESE SECTION SEPARATORS */
+.jp-section-separator {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--jp-sakura-300) 20%,
+    var(--jp-ai-300) 50%,
+    var(--jp-midori-300) 80%,
+    transparent 100%
+  );
+  margin: 4rem 0;
+}
+
+.jp-section-separator::before {
+  content: "❀";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--jp-shiro);
+  padding: 0 1rem;
+  color: var(--jp-sakura-400);
+  font-size: 1.2rem;
+}
+
+/* ENHANCED JAPANESE BUTTONS */
+.jp-btn-zen {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    var(--jp-shiro) 0%,
+    var(--jp-sumi-50) 100%
+  );
+  border: 2px solid var(--jp-sakura-300);
+  color: var(--jp-sumi-800);
+  transition: all 0.4s ease;
+}
+
+.jp-btn-zen::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(222, 92, 92, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.jp-btn-zen:hover::before {
+  left: 100%;
+}
+
+.jp-btn-zen:hover {
+  border-color: var(--jp-sakura-500);
+  box-shadow: 0 8px 24px rgba(222, 92, 92, 0.2);
+  transform: translateY(-2px);
+}
+
+/* JAPANESE LOADING SPINNER */
+.jp-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--jp-sumi-200);
+  border-top: 3px solid var(--jp-sakura-500);
+  border-radius: 50%;
+  animation: jp-spin 1s linear infinite;
+}
+
+@keyframes jp-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ENHANCED FOCUS STATES */
+.jp-focus-visible:focus-visible {
+  outline: 2px solid var(--jp-ai-500);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* JAPANESE PATTERN BACKGROUNDS */
+.jp-pattern-seigaiha {
+  background-image: radial-gradient(
+      circle at 100% 50%,
+      transparent 20%,
+      rgba(222, 92, 92, 0.1) 21%,
+      rgba(222, 92, 92, 0.1) 34%,
+      transparent 35%,
+      transparent
+    ),
+    linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(99, 102, 241, 0.1) 25%,
+      rgba(99, 102, 241, 0.1) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(99, 102, 241, 0.1) 75%,
+      rgba(99, 102, 241, 0.1) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 60px 60px;
+}
+
+/* RESPONSIVE JAPANESE LAYOUT */
+@media (max-width: 768px) {
+  .jp-text-kanji {
+    writing-mode: horizontal-tb;
+    text-orientation: upright;
+  }
+
+  .jp-btn-zen {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .jp-section-separator {
+    margin: 2rem 0;
+  }
+}
+
+/* JAPANESE SCROLL BEHAVIOR */
+.jp-smooth-scroll {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+/* ENHANCED JAPANESE SHADOWS */
+.jp-shadow-zen {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(222, 92, 92, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.jp-shadow-zen-lg {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(222, 92, 92, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* ENHANCED JAPANESE SERVICE PAGE STYLES */
+
+/* Japanese Text Styles */
+.jp-text-kanji {
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 300;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  letter-spacing: 0.1em;
+}
+
+/* Enhanced Floating Animations */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float.delay-1000 {
+  animation-delay: 2s;
+}
+
+.animate-float.delay-2000 {
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+/* Enhanced Line Clamp */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Service Card Hover Effects */
+.service-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(222, 92, 92, 0.1);
+}
+
+/* Japanese Pattern Background */
+.jp-pattern-seigaiha {
+  background-image: radial-gradient(
+      circle at 100% 50%,
+      transparent 20%,
+      rgba(222, 92, 92, 0.1) 21%,
+      rgba(222, 92, 92, 0.1) 34%,
+      transparent 35%,
+      transparent
+    ),
+    linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(99, 102, 241, 0.1) 25%,
+      rgba(99, 102, 241, 0.1) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(99, 102, 241, 0.1) 75%,
+      rgba(99, 102, 241, 0.1) 76%,
+      transparent 77%,
+      transparent
+    );
+  background-size: 60px 60px;
+}
+
+/* Enhanced Zen Styles */
+.jp-text-zen {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1.8;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .jp-text-kanji {
+    font-size: 2rem;
+    writing-mode: horizontal-tb;
+    text-orientation: upright;
+  }
+
+  .service-card:hover {
+    transform: translateY(-8px) scale(1.01);
+  }
+
+  .animate-float {
+    animation-duration: 4s;
+  }
+}
+
+/* CONTAINER HOVER FIX */
+.trainer-cards-container {
+  padding: 2rem 1rem; /* Thêm padding để card có không gian mở rộng */
+  overflow: visible !important; /* Cho phép overflow */
+}
+
+.trainer-card-wrapper {
+  padding: 1rem; /* Padding riêng cho mỗi card wrapper */
+  overflow: visible !important;
+}
+
+/* ENHANCED CARD HOVER EFFECTS */
+.trainer-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+  position: relative;
+  z-index: 1;
+}
+
+.trainer-card:hover {
+  transform: translateY(-20px) scale(1.05) rotateY(15deg) rotateX(5deg);
+  z-index: 10; /* Đưa card lên trên khi hover */
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(222, 92, 92, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* CONTAINER SPACING FIX */
+@media (max-width: 768px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem 0.5rem;
+  }
+
+  .trainer-card:hover {
+    transform: translateY(-15px) scale(1.03);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Z-INDEX MANAGEMENT */
+.trainers-section {
+  z-index: 1;
+}
+
+.trainer-card-wrapper {
+  z-index: 2;
+}
+
+.trainer-card {
+  z-index: 3;
+}
+
+.trainer-card:hover {
+  z-index: 1000 !important; /* Highest priority */
+}
+
+/* PERSPECTIVE CONTAINER ENHANCEMENT */
+.trainer-cards-container {
+  perspective: 1500px;
+  perspective-origin: center center;
+  transform-style: preserve-3d;
+}
+
+/* SMOOTH PERFORMANCE */
+.trainer-card {
+  transform: translateZ(0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* FIX CONTAINER OVERFLOW - SECTION LEVEL */
+.trainers-section {
+  position: relative;
+  z-index: 1;
+  overflow: visible !important; /* Quan trọng nhất */
+  padding: 6rem 1rem; /* Tăng padding để có không gian */
+}
+
+.trainers-section .max-w-7xl {
+  overflow: visible !important;
+  padding: 0;
+}
+
+/* FIX GRID CONTAINER */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3rem; /* Tăng gap để có không gian */
+  padding: 3rem 1rem; /* Padding lớn hơn */
+  overflow: visible !important;
+  perspective: 1000px;
+}
+
+.trainer-cards-container {
+  padding: 4rem 2rem; /* Padding cực lớn */
+  overflow: visible !important;
+  perspective: 1200px;
+  perspective-origin: center center;
+}
+
+/* FIX CARD WRAPPER */
+.trainer-card-wrapper {
+  padding: 2rem; /* Padding lớn cho wrapper */
+  overflow: visible !important;
+  transform-style: preserve-3d;
+  position: relative;
+  z-index: 2;
+}
+
+/* ENHANCED CARD HOVER - NO CLIPPING */
+.trainer-card {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+  position: relative;
+  z-index: 3;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform; /* GPU acceleration */
+}
+
+.trainer-card:hover {
+  transform: translateY(-30px) translateZ(50px) scale(1.08) rotateY(12deg)
+    rotateX(5deg);
+  z-index: 999 !important; /* Force lên trên cùng */
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(222, 92, 92, 0.2),
+    0 0 40px rgba(255, 255, 255, 0.15);
+}
+
+/* TESTIMONIALS SECTION FIX */
+.testimonials-section {
+  overflow: visible !important;
+  padding: 6rem 1rem;
+}
+
+.testimonials-section .max-w-7xl {
+  overflow: visible !important;
+}
+
+/* TESTIMONIAL CARD HOVER FIX */
+.testimonial-card {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 3;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-25px) scale(1.06) rotateZ(3deg);
+  z-index: 999;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* GLOBAL OVERFLOW FIX */
+body,
+html {
+  overflow-x: hidden; /* Chỉ ẩn horizontal scroll */
+  overflow-y: auto; /* Cho phép vertical scroll */
+}
+
+/* FIX CLUB CARD HOVER OVERFLOW */
+.club-section {
+  position: relative;
+  overflow: visible !important;
+  padding: 6rem 0 8rem 0; /* Tăng padding bottom để tránh dính */
+}
+
+.club-container {
+  overflow: visible !important;
+  padding: 0 1rem;
+}
+
+.club-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 3rem; /* Tăng gap */
+  padding: 2rem 0 4rem 0; /* Padding bottom lớn */
+  overflow: visible !important;
+}
+
+.club-card-wrapper {
+  position: relative;
+  padding: 2rem; /* Padding lớn để card có không gian mở rộng */
+  overflow: visible !important;
+  transform-style: preserve-3d;
+  z-index: 1;
+}
+
+.club-card {
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+  border-radius: 1rem; /* 16px - Đảm bảo bo góc */
+  overflow: hidden;
+  z-index: 2;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.club-card:hover {
+  transform: translateY(-20px) scale(1.05);
+  z-index: 999 !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  border-radius: 1rem !important; /* Force border radius khi hover */
+}
+
+/* PRESERVE BORDER RADIUS ON SCALE */
+.club-card:hover * {
+  border-radius: inherit; /* Kế thừa border radius từ parent */
+}
+
+.club-card .rounded-2xl {
+  border-radius: 1rem !important; /* Force 16px border radius */
+}
+
+.club-card:hover .rounded-2xl {
+  border-radius: 1rem !important; /* Maintain border radius on hover */
+}
+
+/* SECTION SPACING FIX */
+.section-spacing {
+  margin-bottom: 4rem; /* Khoảng cách giữa các section */
+}
+
+.membership-section {
+  margin-top: 4rem; /* Tạo khoảng cách với section trước */
+  padding-top: 6rem;
+}
+
+/* FEATURES SECTION SPACING */
+.features-section {
+  margin-bottom: 4rem;
+  padding-bottom: 6rem;
+}
+
+/* MODAL OVERLAY ENHANCEMENT */
+.modal-overlay {
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+}
+
+.modal-content {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 768px) {
+  .club-card-wrapper {
+    padding: 1rem;
+  }
+
+  .club-grid {
+    gap: 2rem;
+    padding: 1rem 0 3rem 0;
+  }
+
+  .club-card:hover {
+    transform: translateY(-15px) scale(1.03);
+  }
+
+  .section-spacing {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .club-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .club-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+  }
+}
